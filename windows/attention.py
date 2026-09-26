@@ -26,7 +26,7 @@ class AttentionWindow(BaseWindow):
             "Take a deep breath."
         )
 
-        self.add_button(
+        self.add_transition_button(
             "Yes, I'm here",
             on_continue,
         )

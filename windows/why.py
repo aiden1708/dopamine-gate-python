@@ -41,7 +41,7 @@ class WhyWindow(BaseWindow):
             "secondaryButton",
         )
 
-        self.add_button(
+        self.add_transition_button(
             "I understand",
             on_continue,
         )

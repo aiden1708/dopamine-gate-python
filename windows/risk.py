@@ -32,7 +32,7 @@ class RiskWindow(BaseWindow):
             "and not get lost while using it?"
         )
 
-        self.add_button(
+        self.add_transition_button(
             "Yes, I understand",
             on_continue,
         )

@@ -29,9 +29,9 @@ class ConfirmationWindow(BaseWindow):
             "Are you ready to continue?"
         )
 
-        self.add_button(
+        self.add_transition_button(
             "Yes",
-            on_continue,
+            on_continue
         )
 
         self.add_button(

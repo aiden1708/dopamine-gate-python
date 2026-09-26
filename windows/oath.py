@@ -19,7 +19,6 @@ from PySide6.QtWidgets import (
 
 from config import OATH
 from oath import find_first_mismatch
-
 from .base import BaseWindow
 
 
@@ -49,7 +48,6 @@ class OathInput(QPlainTextEdit):
 
 
 class OathWindow(BaseWindow):
-
     def __init__(self, on_complete, on_exit):
 
         super().__init__(

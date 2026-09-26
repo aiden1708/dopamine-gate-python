@@ -35,7 +35,7 @@ class StoppingPlanWindow(BaseWindow):
             "That's it."
         )
 
-        self.add_button(
+        self.add_transition_button(
             "I accept the stopping rule",
             on_continue,
         )

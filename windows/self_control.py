@@ -30,7 +30,7 @@ class SelfControlWindow(BaseWindow):
             "It is risky. You should know that before entering."
         )
 
-        self.add_button(
+        self.add_transition_button(
             "Yes, I can handle it",
             on_continue,
         )

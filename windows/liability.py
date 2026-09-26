@@ -48,7 +48,7 @@ class LiabilityWindow(BaseWindow):
             "Read the liability rules carefully before proceeding."
         )
 
-        self.add_button(
+        self.add_transition_button(
             "I accept the liability",
             on_continue,
         )
