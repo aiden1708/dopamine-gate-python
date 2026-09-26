@@ -6,7 +6,7 @@ import sys
 from datetime import datetime, time
 
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QFont
+from PySide6.QtGui import QFont, QKeyEvent
 from PySide6.QtWidgets import (
     QApplication,
     QFrame,
@@ -53,6 +53,7 @@ and walk one step closer to freedom."""
 # TIME CHECK
 # ============================================================
 
+
 def is_work_time():
     now = datetime.now().time()
     return WORK_START <= now <= WORK_END
@@ -69,8 +70,28 @@ def launch_app(app_cmd):
 # GUI
 # ============================================================
 
-class BlockWindow(QWidget):
 
+class OathInput(QPlainTextEdit):
+    def __init__(self, check_password, parent=None):
+        super().__init__(parent)
+        self.check_password = check_password
+
+    def keyPressEvent(self, event: QKeyEvent):
+        if (
+            event.key()
+            in (
+                Qt.Key.Key_Return,
+                Qt.Key.Key_Enter,
+            )
+            and event.modifiers() & Qt.KeyboardModifier.ControlModifier
+        ):
+            self.check_password()
+            return
+
+        super().keyPressEvent(event)
+
+
+class BlockWindow(QWidget):
     def __init__(self, app_cmd):
         super().__init__()
 
@@ -157,9 +178,7 @@ class BlockWindow(QWidget):
         self.oath_display.setTextInteractionFlags(
             Qt.TextInteractionFlag.NoTextInteraction
         )
-        self.oath_display.setLineWrapMode(
-            QPlainTextEdit.LineWrapMode.WidgetWidth
-        )
+        self.oath_display.setLineWrapMode(QPlainTextEdit.LineWrapMode.WidgetWidth)
         self.oath_display.setObjectName("oathDisplay")
 
         left_layout.addWidget(oath_title)
@@ -186,10 +205,7 @@ class BlockWindow(QWidget):
         write_font.setBold(True)
         write_title.setFont(write_font)
 
-        instruction = QLabel(
-            "Do not copy and paste.<br>"
-            "Write the oath deliberately."
-        )
+        instruction = QLabel("Do not copy and paste.<br>Write the oath deliberately.")
 
         instruction.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -197,33 +213,26 @@ class BlockWindow(QWidget):
         # Large typing area
         # --------------------------------------------------------
 
-        self.password_input = QPlainTextEdit()
-
-        self.password_input.setPlaceholderText(
-            "Write the oath here..."
+        self.password_input = OathInput(
+            self.check_password,
+            self,
         )
 
-        self.password_input.setLineWrapMode(
-            QPlainTextEdit.LineWrapMode.WidgetWidth
-        )
+        self.password_input.setPlaceholderText("Write the oath here...")
+
+        self.password_input.setLineWrapMode(QPlainTextEdit.LineWrapMode.WidgetWidth)
 
         self.password_input.setObjectName("passwordInput")
 
-        self.password_input.textChanged.connect(
-            self.check_typing
-        )
+        self.password_input.textChanged.connect(self.check_typing)
 
         # --------------------------------------------------------
         # Progress / feedback
         # --------------------------------------------------------
 
-        self.status_label = QLabel(
-            "Begin writing the oath."
-        )
+        self.status_label = QLabel("Begin writing the oath.")
 
-        self.status_label.setAlignment(
-            Qt.AlignmentFlag.AlignCenter
-        )
+        self.status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.status_label.setWordWrap(True)
 
@@ -237,9 +246,7 @@ class BlockWindow(QWidget):
 
         self.unlock_button.setEnabled(False)
 
-        self.unlock_button.clicked.connect(
-            self.check_password
-        )
+        self.unlock_button.clicked.connect(self.check_password)
 
         # --------------------------------------------------------
         # Layout
@@ -352,9 +359,7 @@ class BlockWindow(QWidget):
         # --------------------------------------------------------
 
         if not typed:
-            self.status_label.setText(
-                "Begin writing the oath."
-            )
+            self.status_label.setText("Begin writing the oath.")
 
             self.unlock_button.setEnabled(False)
 
@@ -367,10 +372,7 @@ class BlockWindow(QWidget):
         # --------------------------------------------------------
 
         if typed == PASSWORD:
-
-            self.status_label.setText(
-                "✓ The oath is complete."
-            )
+            self.status_label.setText("✓ The oath is complete.")
 
             self.unlock_button.setEnabled(True)
 
@@ -396,7 +398,6 @@ class BlockWindow(QWidget):
         # --------------------------------------------------------
 
         if position == len(typed):
-
             remaining = len(PASSWORD) - len(typed)
 
             self.status_label.setText(
@@ -456,9 +457,7 @@ class BlockWindow(QWidget):
         # --------------------------------------------------------
 
         for i in range(minimum):
-
             if typed[i] != expected[i]:
-
                 return {
                     "position": i,
                     "expected": expected[i],
@@ -470,7 +469,6 @@ class BlockWindow(QWidget):
         # --------------------------------------------------------
 
         if len(typed) > len(expected):
-
             return {
                 "position": len(expected),
                 "expected": "",
@@ -494,7 +492,6 @@ class BlockWindow(QWidget):
     def set_input_border(self, state):
 
         if state == "correct":
-
             self.password_input.setStyleSheet("""
                 QPlainTextEdit {
                     background-color: #101010;
@@ -506,7 +503,6 @@ class BlockWindow(QWidget):
             """)
 
         elif state == "error":
-
             self.password_input.setStyleSheet("""
                 QPlainTextEdit {
                     background-color: #101010;
@@ -518,7 +514,6 @@ class BlockWindow(QWidget):
             """)
 
         else:
-
             self.password_input.setStyleSheet("""
                 QPlainTextEdit {
                     background-color: #101010;
@@ -540,7 +535,6 @@ class BlockWindow(QWidget):
     def check_password(self):
 
         if self.password_input.toPlainText() == PASSWORD:
-
             launch_app(self.app_cmd)
 
             QApplication.quit()
@@ -549,6 +543,7 @@ class BlockWindow(QWidget):
 # ============================================================
 # MAIN LOGIC
 # ============================================================
+
 
 def start_block_ui(app_cmd):
     app = QApplication(sys.argv)
@@ -560,6 +555,7 @@ def start_block_ui(app_cmd):
     window.showFullScreen()
 
     sys.exit(app.exec())
+
 
 def main():
 
@@ -576,6 +572,7 @@ def main():
         start_block_ui(app_cmd="test")
 
     launch_app(app_cmd)
+
 
 if __name__ == "__main__":
     main()
