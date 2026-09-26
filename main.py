@@ -76,7 +76,7 @@ class BlockWindow(QWidget):
 
         self.app_cmd = app_cmd
 
-        self.setWindowTitle("Pause")
+        self.setWindowTitle(f"Dopamine Gate Before Entering '{app_cmd}'")
 
         # --------------------------------------------------------
         # 75% of available screen
@@ -154,6 +154,9 @@ class BlockWindow(QWidget):
         self.oath_display = QPlainTextEdit()
         self.oath_display.setPlainText(PASSWORD)
         self.oath_display.setReadOnly(True)
+        self.oath_display.setTextInteractionFlags(
+            Qt.TextInteractionFlag.NoTextInteraction
+        )
         self.oath_display.setLineWrapMode(
             QPlainTextEdit.LineWrapMode.WidgetWidth
         )
@@ -547,6 +550,17 @@ class BlockWindow(QWidget):
 # MAIN LOGIC
 # ============================================================
 
+def start_block_ui(app_cmd):
+    app = QApplication(sys.argv)
+
+    if app_cmd == "test":
+        app_cmd = "Testing the app"
+
+    window = BlockWindow(app_cmd)
+    window.showFullScreen()
+
+    sys.exit(app.exec())
+
 def main():
 
     if len(sys.argv) < 2:
@@ -556,16 +570,12 @@ def main():
     app_cmd = sys.argv[1]
 
     if is_work_time():
+        start_block_ui(app_cmd)
 
-        app = QApplication(sys.argv)
-
-        window = BlockWindow(app_cmd)
-        window.show()
-
-        sys.exit(app.exec())
+    if app_cmd == "test":
+        start_block_ui(app_cmd="test")
 
     launch_app(app_cmd)
-
 
 if __name__ == "__main__":
     main()
