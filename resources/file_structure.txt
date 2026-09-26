@@ -1,0 +1,24 @@
+├── windows/
+│   ├── __init__.py
+│   ├── base.py
+│   ├── attention.py
+│   ├── risk.py
+│   ├── stopping_plan.py
+│   ├── self_control.py
+│   ├── why.py
+│   ├── liability.py
+│   ├── confirmation.py
+│   └── oath.py
+│
+
+touch base.py attention.py risk.py stopping_plan.py self_control.py why.py liability.py confirmation.py oath.py
+
+
+├── main.py
+├── config.py
+├── launcher.py
+├── flow.py
+├── oath.py
+├── styles.py
+
+touch config.py launcher.py flow.py oath.py styles.py
