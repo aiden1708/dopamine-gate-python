@@ -2,48 +2,35 @@
 
 > **A gatekeeper launcher that puts a pause between impulse and action.**
 
-Dopamine Gate is a lightweight Python desktop application that intercepts the launch of distracting applications and gives you an opportunity to stop before opening them.
+Dopamine Gate is a lightweight Python application for **Linux desktop systems** that intercepts the launch of distracting applications during protected hours.
 
-Instead of modifying or blocking applications directly, Dopamine Gate works as a **command wrapper**:
+It is built around a simple problem:
+
+> **When craving arises, knowing what you should do is not always enough to control what you actually do.**
+
+Dopamine Gate introduces friction at exactly that moment.
 
 ```text
-User runs application
-        ↓
+Impulse
+   ↓
 Dopamine Gate
-        ↓
-Should this application be allowed?
-        ↓
-   ┌────┴────┐
-   ↓         ↓
- Allow     Block
-   ↓         ↓
-Launch     Stop
+   ↓
+Pause
+   ↓
+Awareness
+   ↓
+Choice
 ```
 
-The idea is simple:
+The goal is not to make distraction impossible.
 
-> **Don't rely entirely on willpower. Put friction between the impulse and the action.**
-
----
-
-# Features
-
-* 🛡️ Intercepts application launch commands
-* 🐍 Written in Python
-* 🖥️ Designed for Linux desktop environments
-* ⏰ Can be used to enforce productive hours
-* 🚧 Prevents configured applications from launching directly
-* 🔌 Works without modifying the target applications
-* 🪶 Lightweight command-line launcher architecture
-* 🔧 Can be integrated directly into shell aliases/functions
+The goal is to make **impulsive distraction harder**.
 
 ---
 
 # How It Works
 
-Dopamine Gate is not itself a replacement for Firefox, Telegram, Chrome, etc.
-
-Instead, you replace the normal executable command with a small wrapper.
+Dopamine Gate works as a command wrapper rather than modifying the applications themselves.
 
 Normally:
 
@@ -73,24 +60,131 @@ Decision
 /usr/bin/firefox
 ```
 
-This means the target application does not need to know that Dopamine Gate exists.
+The target application does not need to know that Dopamine Gate exists.
+
+---
+
+# The Idea Behind the Gate
+
+Dopamine Gate is based on a behavioral observation:
+
+```text
+Craving → Impulsive action → Immediate reward
+```
+
+When craving becomes strong, the mind can become highly biased toward immediate satisfaction. At that point, simply remembering *"I shouldn't do this"* may not be enough.
+
+So instead of relying entirely on willpower, Dopamine Gate changes the environment.
+
+```text
+Without a gate:
+
+Craving → Action
+```
+
+```text
+With Dopamine Gate:
+
+Craving → Gate → Effort → Awareness → Choice
+```
+
+The interruption itself is the point.
+
+---
+
+# The Oath
+
+The final step of the gate requires the user to **type an oath** before continuing.
+
+This is intentional.
+
+Craving wants the easiest and fastest path to satisfaction. Typing a deliberate statement requires effort, attention, and conscious participation.
+
+The idea is simple:
+
+> **If you are genuinely making a deliberate choice, you should be willing to spend a few seconds making it.**
+
+The default oath is:
+
+> *When craving rises, I shall not obey.*
+
+It continues with reminders to observe craving and feelings without automatically acting on them.
+
+This is not intended as a magical psychological cure. It is a deliberate **friction mechanism**: turn an automatic action into a conscious action.
+
+You can change the oath in `config.py`.
+
+---
+
+# Configuration
+
+Most personal settings are kept in:
+
+```text
+config.py
+```
+
+You can edit the variables there without changing the core application.
+
+For example:
+
+```python
+WORK_START = time(0, 0)
+WORK_END = time(22, 0)
+```
+
+These define the protected period.
+
+You can change them to something such as:
+
+```python
+WORK_START = time(8, 0)
+WORK_END = time(18, 0)
+```
+
+You can also customize:
+
+```python
+OATH
+WINDOW_WIDTH_RATIO
+WINDOW_HEIGHT_RATIO
+CONFIRMATION_BUTTON_COUNTDOWN
+APPLICATION_NAME
+NOT_READY_MESSAGE
+```
+
+In other words, **`config.py` is the place to personalize Dopamine Gate's behavior and appearance.**
+
+---
+
+# Features
+
+* 🛡️ Intercepts application launch commands
+* ⏰ Protects configurable productive hours
+* 🧠 Creates deliberate friction before distraction
+* ✍️ Requires an intentional oath before continuing
+* 🐍 Written in Python
+* 🖥️ Designed for Linux desktop environments
+* 🔌 Works without modifying target applications
+* 🪶 Lightweight command-wrapper architecture
+* 🔧 Works with Bash, Zsh, and other compatible shells
 
 ---
 
 # Requirements
 
-## Operating System
+Dopamine Gate is currently developed for **Linux**.
 
-The current desktop implementation is intended primarily for **Linux** systems.
+Windows is **not currently supported**. I have not yet tested or figured out a reliable Windows workflow for the command interception mechanism.
 
 You need:
 
-* Python 3.9 or newer
+* Python 3.9+
 * `pip`
-* A POSIX-compatible shell such as Bash or Zsh
-* The target application's executable path
+* Bash, Zsh, or another compatible shell
+* The executable path of applications you want to protect
 
-Check your Python version:
+Check Python:
 
 ```bash
 python3 --version
@@ -109,19 +203,13 @@ python3 -m pip --version
 Clone the repository:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/dopamine-gate.git
+git clone https://github.com/aiden1708/dopamine-gate.git
 cd dopamine-gate
 ```
 
-Replace `YOUR_USERNAME` with the GitHub account containing the repository.
+## Create a Virtual Environment
 
----
-
-## Recommended: Create a Virtual Environment
-
-Using a virtual environment keeps Dopamine Gate's Python dependencies isolated from your system Python installation.
-
-Create the environment:
+Recommended:
 
 ```bash
 python3 -m venv .venv
@@ -129,47 +217,32 @@ python3 -m venv .venv
 
 Activate it:
 
-### Bash / Zsh
-
 ```bash
 source .venv/bin/activate
 ```
 
-You should now see something similar to:
-
-```text
-(.venv) user@computer:~/dopamine-gate$
-```
-
----
-
-## Install Dependencies
-
-If the project contains a `requirements.txt` file:
+Then install the dependencies:
 
 ```bash
+python3 -m pip install --upgrade pip
 python3 -m pip install -r requirements.txt
 ```
 
-For development dependencies:
+For development dependencies, if provided:
 
 ```bash
 python3 -m pip install -r requirements-dev.txt
 ```
 
-If you are developing the project from scratch, keep the application's dependencies in `requirements.txt` rather than asking users to install packages manually.
-
 ---
 
-# Running Dopamine Gate Directly
+# Test Dopamine Gate Directly
 
-You can test the application before configuring shell commands:
+Before configuring your shell, test it directly:
 
 ```bash
 python3 main.py /usr/bin/firefox
 ```
-
-The argument passed to `main.py` is the executable that Dopamine Gate should eventually launch.
 
 For example:
 
@@ -183,69 +256,53 @@ or:
 python3 main.py /bin/Telegram
 ```
 
-This is useful for testing the gate before modifying your shell configuration.
+The executable path is passed to Dopamine Gate so that it can launch the application when the user is allowed to continue.
 
 ---
 
-# Setting Up Command Interception
+# Configure Your Shell
 
-The most important part of the desktop version is replacing the normal application commands with Dopamine Gate wrappers.
+The desktop version works by replacing the normal application command with a wrapper.
 
-You can do this using a shell function and aliases.
+## 1. Set the Script Path
 
-## 1. Set the Dopamine Gate Script Path
-
-First, define the location of `main.py`.
-
-For example:
-
-```bash
-export DOPAMINE_GATE_SCRIPT="$HOME/Programming/Aiden's Git Repos/focus-launcher/main.py"
-```
-
-This environment variable tells the wrapper where Dopamine Gate is installed.
-
-If you cloned the project somewhere else, change the path accordingly.
-
-For example:
+Add:
 
 ```bash
 export DOPAMINE_GATE_SCRIPT="$HOME/Projects/dopamine-gate/main.py"
 ```
 
+Change the path to wherever you cloned the repository.
+
 ---
 
-# 2. Create the Wrapper Function
+## 2. Create the Wrapper
 
-Add the following function to your shell configuration:
+Add:
 
 ```bash
 gate_run() {
-    python3 "$DOPAMINE_GATE_SCRIPT" "$1"
+    python3 "$DOPAMINE_GATE_SCRIPT" "$@"
 }
 ```
 
-This function receives the target executable and passes it to Dopamine Gate.
+**Use `"$@"`, not `"$1"`**.
+
+This preserves additional arguments passed to the application.
 
 For example:
 
 ```bash
-gate_run /usr/bin/firefox
+firefox --private-window https://example.com
 ```
 
-is equivalent to:
-
-```bash
-python3 "$DOPAMINE_GATE_SCRIPT" /usr/bin/firefox
-```
+can pass all of its arguments through Dopamine Gate.
 
 ---
 
-# 3. Create Application Aliases
+## 3. Create Aliases
 
-You can now replace the normal commands with aliases.
-
-Example:
+For example:
 
 ```bash
 alias firefox="gate_run /usr/bin/firefox"
@@ -253,15 +310,13 @@ alias Telegram="gate_run /bin/Telegram"
 alias google-chrome-stable="gate_run /bin/google-chrome-stable"
 ```
 
-Now, when you type:
+Now:
 
 ```bash
 firefox
 ```
 
-your shell does not directly execute Firefox.
-
-Instead:
+becomes:
 
 ```text
 firefox
@@ -281,18 +336,18 @@ Decision
 
 # Complete Example
 
-The following is the complete setup used in one Linux environment:
+Here is a complete example:
 
 ```bash
 # Dopamine Gate Script Path
 export DOPAMINE_GATE_SCRIPT="$HOME/Programming/Aiden's Git Repos/focus-launcher/main.py"
 
-# A reusable wrapper function that handles the Python execution safely
+# Reusable wrapper
 gate_run() {
-    python3 "$DOPAMINE_GATE_SCRIPT" "$1"
+    python3 "$DOPAMINE_GATE_SCRIPT" "$@"
 }
 
-# Pointing aliases to the function, passing the target binary path
+# Protected applications
 alias firefox="gate_run /usr/bin/firefox"
 alias Telegram="gate_run /bin/Telegram"
 alias google-chrome-stable="gate_run /bin/google-chrome-stable"
@@ -300,400 +355,21 @@ alias google-chrome-stable="gate_run /bin/google-chrome-stable"
 
 ---
 
-# Making the Configuration Permanent
+# Make It Permanent
 
-If you use **Bash**, put the configuration in:
-
-```text
-~/.bashrc
-```
-
-If you use **Zsh**, put it in:
+For **Zsh**, add the configuration to:
 
 ```text
 ~/.zshrc
 ```
 
-For example:
-
-```bash
-nano ~/.zshrc
-```
-
-Add:
-
-```bash
-# Dopamine Gate
-export DOPAMINE_GATE_SCRIPT="$HOME/Programming/Aiden's Git Repos/focus-launcher/main.py"
-
-gate_run() {
-    python3 "$DOPAMINE_GATE_SCRIPT" "$1"
-}
-
-alias firefox="gate_run /usr/bin/firefox"
-alias Telegram="gate_run /bin/Telegram"
-alias google-chrome-stable="gate_run /bin/google-chrome-stable"
-```
-
-Then reload your shell:
-
-```bash
-source ~/.zshrc
-```
-
-For Bash:
-
-```bash
-source ~/.bashrc
-```
-
----
-
-# Finding Application Executable Paths
-
-You need to know the actual executable path of the application you want to intercept.
-
-Use:
-
-```bash
-which firefox
-```
-
-Example:
+For **Bash**:
 
 ```text
-/usr/bin/firefox
+~/.bashrc
 ```
 
-You can then use:
-
-```bash
-alias firefox="gate_run /usr/bin/firefox"
-```
-
-For another application:
-
-```bash
-which google-chrome-stable
-```
-
-Or:
-
-```bash
-command -v google-chrome-stable
-```
-
----
-
-# Important: The Alias Name Must Match the Command
-
-Suppose the normal command is:
-
-```bash
-google-chrome-stable
-```
-
-Your alias should therefore be:
-
-```bash
-alias google-chrome-stable="gate_run /usr/bin/google-chrome-stable"
-```
-
-The left side is the command you normally type.
-
-The right side is the real executable that Dopamine Gate eventually launches.
-
----
-
-# Testing the Setup
-
-After configuring the aliases, check that the shell recognizes them.
-
-For example:
-
-```bash
-type firefox
-```
-
-You should see something similar to:
-
-```text
-firefox is aliased to `gate_run /usr/bin/firefox'
-```
-
-You can also inspect the alias directly:
-
-```bash
-alias firefox
-```
-
-Then run:
-
-```bash
-firefox
-```
-
-Dopamine Gate should receive:
-
-```text
-/usr/bin/firefox
-```
-
-instead of Firefox being launched directly.
-
----
-
-# Bypassing the Gate
-
-Because Dopamine Gate works at the shell-command level, users should understand that this is **not a security boundary**.
-
-If the real executable is still accessible, it can generally be launched directly.
-
-For example, if:
-
-```bash
-firefox
-```
-
-is intercepted by the alias, directly running:
-
-```bash
-/usr/bin/firefox
-```
-
-may bypass the alias.
-
-This is intentional.
-
-Dopamine Gate is designed as a **self-control and friction system**, not a tamper-proof parental-control system.
-
-Its purpose is to make impulsive behavior harder, not to make intentional bypassing impossible.
-
----
-
-# Why Use Command Wrappers?
-
-There are several ways to build an application blocker.
-
-One approach is to continuously monitor every running process:
-
-```text
-Monitor processes
-       ↓
-Find distracting application
-       ↓
-Kill application
-```
-
-Dopamine Gate takes a different approach:
-
-```text
-User attempts launch
-       ↓
-Intercept command
-       ↓
-Gate
-       ↓
-Launch only after decision
-```
-
-This means the system can intervene **before** the application is intentionally launched through the configured command.
-
----
-
-# Architecture
-
-The desktop version is intentionally simple:
-
-```text
-┌─────────────────────┐
-│      Shell          │
-│                     │
-│  firefox            │
-└──────────┬──────────┘
-           │
-           ▼
-┌─────────────────────┐
-│     gate_run()      │
-│                     │
-│   Python launcher   │
-└──────────┬──────────┘
-           │
-           ▼
-┌─────────────────────┐
-│   Dopamine Gate     │
-│                     │
-│  Decide whether     │
-│  launch is allowed  │
-└──────────┬──────────┘
-           │
-           ▼
-┌─────────────────────┐
-│  Target executable  │
-│                     │
-│ /usr/bin/firefox    │
-└─────────────────────┘
-```
-
----
-
-# Project Structure
-
-A typical project structure:
-
-```text
-dopamine-gate/
-├── main.py
-├── requirements.txt
-├── requirements-dev.txt
-├── README.md
-├── .gitignore
-├── .venv/
-└── ...
-```
-
-The `.venv/` directory should **not** be committed to Git.
-
-Add it to `.gitignore`:
-
-```gitignore
-.venv/
-__pycache__/
-*.py[cod]
-*.egg-info/
-dist/
-build/
-.env
-```
-
----
-
-# Python Dependencies
-
-Keep runtime dependencies in:
-
-```text
-requirements.txt
-```
-
-For example:
-
-```text
-# Runtime dependencies
-```
-
-Add packages here as the application actually requires them.
-
-Development-only packages should go into:
-
-```text
-requirements-dev.txt
-```
-
-For example:
-
-```text
--r requirements.txt
-
-pytest
-ruff
-```
-
-Then install development dependencies with:
-
-```bash
-python3 -m pip install -r requirements-dev.txt
-```
-
-Avoid installing random packages globally just to make the project work.
-
----
-
-# Recommended Development Setup
-
-After cloning:
-
-```bash
-cd dopamine-gate
-
-python3 -m venv .venv
-
-source .venv/bin/activate
-
-python3 -m pip install --upgrade pip
-
-python3 -m pip install -r requirements.txt
-```
-
-For development:
-
-```bash
-python3 -m pip install -r requirements-dev.txt
-```
-
-Then run:
-
-```bash
-python3 main.py /usr/bin/firefox
-```
-
----
-
-# Troubleshooting
-
-## `python3: command not found`
-
-Install Python 3 using your distribution's package manager.
-
-Verify:
-
-```bash
-python3 --version
-```
-
----
-
-## `pip: command not found`
-
-Prefer:
-
-```bash
-python3 -m pip
-```
-
-instead of relying on a standalone `pip` command.
-
-For example:
-
-```bash
-python3 -m pip install -r requirements.txt
-```
-
----
-
-## The alias does not work
-
-Check:
-
-```bash
-type firefox
-```
-
-If it says:
-
-```text
-firefox is /usr/bin/firefox
-```
-
-instead of:
-
-```text
-firefox is aliased to ...
-```
-
-your alias has not been loaded.
-
-Reload your shell configuration:
+Then reload:
 
 ```bash
 source ~/.zshrc
@@ -707,45 +383,63 @@ source ~/.bashrc
 
 ---
 
-## Dopamine Gate cannot find the script
+# Find Application Paths
 
-Check:
-
-```bash
-echo "$DOPAMINE_GATE_SCRIPT"
-```
-
-Then verify the file exists:
-
-```bash
-ls -l "$DOPAMINE_GATE_SCRIPT"
-```
-
-You can also run it directly:
-
-```bash
-python3 "$DOPAMINE_GATE_SCRIPT" /usr/bin/firefox
-```
-
----
-
-## The application path is incorrect
-
-Find the executable:
+Use:
 
 ```bash
 command -v firefox
 ```
 
-Then use the returned path in your alias.
+or:
+
+```bash
+which firefox
+```
+
+Example:
+
+```text
+/usr/bin/firefox
+```
+
+Then:
+
+```bash
+alias firefox="gate_run /usr/bin/firefox"
+```
 
 ---
 
-# Security and Limitations
+# Verify the Alias
 
-Dopamine Gate should **not** be considered a security or access-control system.
+Run:
 
-Shell aliases can be bypassed.
+```bash
+type firefox
+```
+
+You should see something similar to:
+
+```text
+firefox is aliased to `gate_run /usr/bin/firefox'
+```
+
+Then:
+
+```bash
+firefox
+```
+
+should pass the request through Dopamine Gate.
+
+---
+
+# Bypassing the Gate
+
+Dopamine Gate is **not a security system**.
+
+Because it operates at the shell-command level, it can be intentionally bypassed.
 
 For example:
 
@@ -753,61 +447,218 @@ For example:
 /usr/bin/firefox
 ```
 
-can bypass:
+may launch Firefox without going through:
 
 ```bash
 firefox
 ```
 
-if the alias is the only interception mechanism.
+You could also bypass it by:
 
-Users can also potentially:
+* Removing the alias
+* Using another shell
+* Launching the application from a desktop launcher
+* Running the executable directly
+* Starting the application through another program
 
-* Remove the alias
-* Open the application from a desktop launcher
-* Use another shell
-* Launch the executable directly
-* Start the application through another program
+This is intentional.
 
-This is acceptable for the project's intended purpose.
+Dopamine Gate is a **self-control tool**, not parental-control software.
 
-Dopamine Gate is about **behavioral friction**, not enforcement.
+The purpose is not to make cheating impossible.
+
+The purpose is to make **impulsive behavior require effort**.
+
+---
+
+# Architecture
+
+```text
+┌─────────────────────┐
+│       Shell         │
+│                     │
+│      firefox        │
+└──────────┬──────────┘
+           │
+           ▼
+┌─────────────────────┐
+│     gate_run()      │
+└──────────┬──────────┘
+           │
+           ▼
+┌─────────────────────┐
+│      main.py        │
+│                     │
+│   Dopamine Gate     │
+└──────────┬──────────┘
+           │
+           ▼
+      ┌────┴────┐
+      │         │
+   Continue    Exit
+      │
+      ▼
+/usr/bin/firefox
+```
+
+---
+
+# Project Structure
+
+```text
+dopamine-gate/
+├── main.py
+├── config.py
+├── requirements.txt
+├── requirements-dev.txt
+├── README.md
+├── .gitignore
+└── ...
+```
+
+If using a virtual environment:
+
+```text
+.venv/
+```
+
+should **not** be committed.
+
+Recommended `.gitignore`:
+
+```gitignore
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.env
+```
+
+---
+
+# Dependencies
+
+Runtime dependencies belong in:
+
+```text
+requirements.txt
+```
+
+Development dependencies belong in:
+
+```text
+requirements-dev.txt
+```
+
+Install runtime dependencies:
+
+```bash
+python3 -m pip install -r requirements.txt
+```
+
+Install development dependencies:
+
+```bash
+python3 -m pip install -r requirements-dev.txt
+```
+
+---
+
+# Troubleshooting
+
+### Python is not installed
+
+```bash
+python3 --version
+```
+
+Install Python using your Linux distribution's package manager.
+
+### The alias is not working
+
+Check:
+
+```bash
+type firefox
+```
+
+If the shell reports:
+
+```text
+firefox is /usr/bin/firefox
+```
+
+instead of an alias, reload your shell configuration:
+
+```bash
+source ~/.zshrc
+```
+
+or:
+
+```bash
+source ~/.bashrc
+```
+
+### Dopamine Gate cannot find the script
+
+Check:
+
+```bash
+echo "$DOPAMINE_GATE_SCRIPT"
+```
+
+Then:
+
+```bash
+ls -l "$DOPAMINE_GATE_SCRIPT"
+```
+
+### The executable path is wrong
+
+Run:
+
+```bash
+command -v firefox
+```
+
+and use the returned path in your alias.
 
 ---
 
 # Philosophy
 
-Dopamine Gate is built around a simple idea:
+Dopamine Gate is built around one central idea:
 
-> **Knowing what you should do is not always enough to make you do it.**
+> **When craving takes control, create enough friction to regain choice.**
 
-When an impulse appears, the easiest path is often to follow it immediately.
+The gate does not decide what you should do.
 
-Dopamine Gate changes the environment:
+It gives you a moment in which you can decide **while you still have a choice**.
 
-```text
-Without Dopamine Gate:
+The oath adds another layer: if you really want to proceed, you must consciously invest effort into that decision.
 
-Impulse → Application
-```
+Craving seeks immediate reward with minimal effort.
 
-With Dopamine Gate:
+Dopamine Gate deliberately does the opposite:
 
 ```text
-Impulse → Gate → Awareness → Choice → Application
+Craving → Effort → Awareness → Choice
 ```
 
-The gate is not supposed to make the decision for you.
-
-It exists to give you enough time to make the decision yourself.
+Even a small interruption can break an automatic behavioral loop.
 
 ---
 
-# Relationship to the Android Version
+# Android Version
 
-The desktop and Android versions share the same basic philosophy but use different mechanisms.
+There is also an Android implementation of Dopamine Gate using Flutter and Kotlin.
 
-### Desktop
+The two versions share the same philosophy but use different mechanisms.
+
+### Linux
 
 ```text
 Shell command
@@ -831,68 +682,32 @@ Dopamine Gate
 Application / Gate
 ```
 
-The desktop version relies on the operating system's command environment, while the Android version uses Android's system-level accessibility capabilities.
-
 ---
 
 # Roadmap
 
-Potential future improvements include:
-
-* [ ] Configuration file for blocked applications
-* [ ] Configurable productive hours
-* [ ] GUI configuration interface
+* [ ] More robust configuration
+* [ ] GUI configuration
 * [ ] Better desktop-launcher integration
-* [ ] Support for `.desktop` application entries
-* [ ] More robust command argument forwarding
-* [ ] Multiple levels of interruption
+* [ ] `.desktop` entry support
 * [ ] Usage statistics
-* [ ] Temporary override system
-* [ ] Cooldown periods
-* [ ] Better support for different Linux desktop environments
-* [ ] Packaging as a standalone Linux application
-
----
-
-# Contributing
-
-Contributions and experiments are welcome.
-
-When submitting a bug report, include:
-
-* Linux distribution
-* Desktop environment
-* Python version
-* Shell (`bash`, `zsh`, etc.)
-* Target application
-* Target executable path
-* Exact command used
-* Error output
-
-For example:
-
-```bash
-python3 --version
-echo "$SHELL"
-command -v firefox
-```
+* [ ] Temporary overrides
+* [ ] More sophisticated productive-hour rules
+* [ ] Improved Linux desktop compatibility
+* [ ] Investigate a reliable Windows workflow
 
 ---
 
 # License
 
-Add the project's chosen open-source license here.
-
-For example:
-
 ```text
 MIT License
 ```
-
-Choose a license deliberately before publishing the repository.
 
 ---
 
 # Dopamine Gate
 
-**Put a gate between the impulse and the action.**
+**Don't try to eliminate every craving.**
+
+**Build a gate between craving and action.**
