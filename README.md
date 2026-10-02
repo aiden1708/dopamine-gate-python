@@ -654,9 +654,18 @@ Even a small interruption can break an automatic behavioral loop.
 
 # Android Version
 
-There is also an Android implementation of Dopamine Gate using Flutter and Kotlin.
+Dopamine Gate is also available as an Android application, built with **Flutter and Kotlin**.
 
-The two versions share the same philosophy but use different mechanisms.
+The Android version uses Android's **Accessibility Service** to intercept distracting applications at the system level, while the Linux version uses shell command wrappers.
+
+**Android repository:**
+[Dopamine Gate Mobile](https://github.com/aiden1708/dopamine-gate-mobile?utm_source=chatgpt.com)
+
+Both versions share the same core philosophy:
+
+> **Put a deliberate gate between craving and action.**
+
+The implementation is different because each operating system provides different ways to intercept application launches.
 
 ### Linux
 
